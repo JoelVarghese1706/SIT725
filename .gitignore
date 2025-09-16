@@ -1,0 +1,27 @@
+﻿# dependencies
+**/node_modules/
+
+# env files
+.env
+.env.*
+*.env
+MVC/.env
+
+# OS/IDE junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# logs / coverage / builds
+logs/
+npm-debug.log*
+yarn-*.log*
+coverage/
+dist/
+build/
+
+# folders we don't want to track
+add_a_database/
+node project/
+sit725-2025-t2-prac3/
