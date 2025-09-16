@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silent Witness</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="blue darken-4">
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo" style="padding-left: 20px;">Silent Witness</a>
+    </div>
+  </nav>
+
+  <!-- Report Form -->
+  <div class="container form-container">
+    <div class="card-panel glass-card">
+      <h4 class="center-align">Report an Incident</h4>
+      <p class="center-align">A safe place to report workplace harassment anonymously</p>
+
+      <form id="reportForm">
+        <div class="input-field">
+          <i class="material-icons prefix">person</i>
+          <input type="text" id="name" name="name" placeholder="Enter your name (optional)">
+          <label for="name">Name (Optional):</label>
+        </div>
+
+        <div class="input-field">
+          <i class="material-icons prefix">report_problem</i>
+          <textarea id="incident" name="incident" class="materialize-textarea" required></textarea>
+          <label for="incident">Incident:</label>
+        </div>
+
+        <div class="center-align">
+          <button class="btn blue darken-2 waves-effect waves-light" type="submit">
+            <i class="material-icons left">send</i>Submit Report
+          </button>
+        </div>
+      </form>
+
+      <!-- Confirmation -->
+      <p id="confirmation" class="green-text center-align" style="display: none; margin-top: 15px;">
+        ✅ Report submitted successfully!
+      </p>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large red" href="/dashboard">
+      <i class="material-icons">list</i>
+    </a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // FAB initialization
+      M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), { direction: 'left' });
+
+      // Handle form submission
+      const form = document.getElementById('reportForm');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        try {
+          const response = await fetch('/report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+            document.getElementById('confirmation').style.display = 'block';
+            form.reset();
+          } else {
+            alert("❌ Failed to submit report. Please try again.");
+          }
+        } catch (err) {
+          console.error("Error submitting report:", err);
+          alert("⚠️ Error submitting report. Check server.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

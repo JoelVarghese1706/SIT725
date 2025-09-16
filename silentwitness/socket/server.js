@@ -1,61 +1,75 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const path = require('path'); // NEW
+const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
 const port = 3000;
 
-// Parse bodies + serve static files
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public')); // serves /style.css, /dashboard.html, etc.
+app.use(express.static('public')); // serves index.html, style.css, dashboard.html, etc.
 
-// Home (form)
+// --- MongoDB Setup ---
+const mongoURI = "mongodb+srv://silentuser:Joelvarghese2002@cluster0.ryxcsde.mongodb.net/silentwitness?retryWrites=true&w=majority";
+mongoose.connect(mongoURI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("❌ MongoDB connection error:", err));
+
+// Schema + Model
+const reportSchema = new mongoose.Schema({
+  name: String,
+  incident: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
+});
+const Report = mongoose.model("Report", reportSchema);
+
+// --- Routes ---
+
+// Serve home (form)
 app.get('/', (req, res) => {
-  res.send(`
-    <html>
-      <head>
-        <link rel="stylesheet" type="text/css" href="/style.css">
-      </head>
-      <body>
-        <form action="/report" method="POST">
-          <h1>Silent Witness</h1>
-          <label for="name">Name (Optional):</label>
-          <input type="text" name="name" id="name">
-          <label for="incident">Incident:</label>
-          <textarea name="incident" id="incident" required></textarea>
-          <button type="submit">Submit</button>
-        </form>
-      </body>
-    </html>
-  `);
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Serve live dashboard (make sure public/dashboard.html exists)
+// Serve dashboard
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Handle report and EMIT socket event
-app.post('/report', (req, res) => {
+// Handle report submission
+app.post('/report', async (req, res) => {
   const { name, incident } = req.body || {};
-  if (!incident) return res.status(400).send('Incident description is required');
+  if (!incident) return res.status(400).json({ error: "Incident description is required" });
 
-  // Emit to all connected clients (dashboard listens for this)
-  const io = req.app.get('io');
-  io.emit('report_submitted', {
-    name: name || '',
-    incident,
-    timestamp: Date.now(),
-    source: 'web'
-  });
+  try {
+    const report = new Report({ name: name || "Anonymous", incident });
+    await report.save();
 
-  // TODO: persist to DB if needed
-  res.send('Report submitted successfully!');
+    // Emit live update
+    const io = req.app.get('io');
+    io.emit('report_submitted', report);
+
+    res.json({ message: "Report submitted successfully!", report });
+  } catch (err) {
+    console.error("❌ Error saving report:", err);
+    res.status(500).json({ error: "Failed to save report" });
+  }
 });
 
-// --- Socket.IO setup ---
+// Fetch last 20 reports
+app.get('/reports', async (req, res) => {
+  try {
+    const reports = await Report.find().sort({ timestamp: -1 }).limit(20);
+    res.json(reports);
+  } catch (err) {
+    console.error("❌ Error fetching reports:", err);
+    res.status(500).json({ error: "Failed to fetch reports" });
+  }
+});
+
+// --- Socket.IO ---
 const server = http.createServer(app);
 const io = new Server(server);
 app.set('io', io);
@@ -66,7 +80,5 @@ io.on('connection', (socket) => {
 
 // Start server
 server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`🚀 Server running at http://localhost:${port}`);
 });
-
-module.exports = app; // keep for tests
