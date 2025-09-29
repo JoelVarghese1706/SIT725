@@ -1,1 +1,25 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Silent Witness Dashboard</title> <link rel="stylesheet" href="style.css"> <script src="/socket.io/socket.io.js"></script> </head> <body> <header class="header"> <h1>Silent Witness Dashboard</h1> <button class="back-btn" onclick="window.location.href='/'">← Back</button> </header> <main> <h2>Submitted Reports</h2> <h3>Latest 20 Reports</h3> <div id="reports-container" class="reports-container"> <p>Loading reports...</p> </div> </main> <script> const socket = io(); // Fetch initial reports async function loadReports() { try { const response = await fetch('/reports'); const data = await response.json(); renderReports(data); } catch (err) { console.error("Failed to load reports:", err); document.getElementById('reports-container').innerHTML = "<p>⚠ Failed to load reports.</p>"; } } // Render reports function renderReports(reports) { const container = document.getElementById('reports-container'); container.innerHTML = ""; if (!reports.length) { container.innerHTML = "<p>No reports found.</p>"; return; } reports.forEach(r => { const div = document.createElement('div'); div.className = "report-card"; div.innerHTML = <p><strong>${r.name || "Anonymous"}</strong></p> <p>${r.incident}</p> <small>${new Date(r.timestamp).toLocaleString()}</small> ; container.appendChild(div); }); } // Live updates via socket socket.on('report_submitted', (report) => { const container = document.getElementById('reports-container'); const div = document.createElement('div'); div.className = "report-card"; div.innerHTML = <p><strong>${report.name || "Anonymous"}</strong></p> <p>${report.incident}</p> <small>${new Date(report.timestamp).toLocaleString()}</small> ; container.prepend(div); // newest first }); // Load on page start document.addEventListener("DOMContentLoaded", loadReports); </script> </body> </html>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Silent Witness Dashboard</title> <link rel="stylesheet" href="style.css"> <script src="/socket.io/socket.io.js"></script> </head> <body> <header class="header"> <h1>Silent Witness Dashboard</h1> <button class="back-btn" onclick="window.location.href='/'">← Back</button> </header> <main> <h2>Submitted Reports</h2> <h3>Latest 20 Reports</h3> <div id="reports-container" class="reports-container"> <p>Loading reports...</p> </div> </main> <script> const socket = io(); // Fetch initial reports async function loadReports() { try { const response = await fetch('/reports'); const data = await response.json(); renderReports(data); } catch (err) { console.error("Failed to load reports:", err); document.getElementById('reports-container').innerHTML = "<p>⚠ Failed to load reports.</p>"; } } // Render reports function renderReports(reports) { const container = document.getElementById('reports-container'); container.innerHTML = ""; if (!reports.length) { container.innerHTML = "<p>No reports found.</p>"; return; } reports.forEach(r => { const div = document.createElement('div'); div.className = "report-card"; div.innerHTML = <p><strong>${r.name || "Anonymous"}</strong></p> <p>${r.incident}</p> <small>${new Date(r.timestamp).toLocaleString()}</small> ; container.appendChild(div); }); } // Live updates via socket socket.on('report_submitted', (report) => { const container = document.getElementById('reports-container'); const div = document.createElement('div'); div.className = "report-card"; div.innerHTML = <p><strong>${report.name || "Anonymous"}</strong></p> <p>${report.incident}</p> <small>${new Date(report.timestamp).toLocaleString()}</small> ; container.prepend(div); // newest first }); // Load on page start document.addEventListener("DOMContentLoaded", loadReports); </script> </body> </html><main>
+  <div class="dashboard-container">
+    <h2>Submitted Reports</h2>
+    <div id="carousel" class="carousel">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80" alt="Incident 1">
+      <img src="https://images.unsplash.com/photo-1590080873613-9d1a6f8f2d97?auto=format&fit=crop&w=600&q=80" alt="Incident 2">
+      <img src="https://images.unsplash.com/photo-1581091870624-20a1b546b0b7?auto=format&fit=crop&w=600&q=80" alt="Incident 3">
+    </div>
+
+    <h3>Latest 20 Reports</h3>
+    <div id="reports-container" class="reports-container">
+      <p>Loading reports...</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Optional: basic carousel rotation
+  let idx = 0;
+  const slides = document.querySelectorAll('#carousel img');
+  setInterval(() => {
+    slides.forEach((img, i) => img.style.display = (i === idx) ? 'block' : 'none');
+    idx = (idx + 1) % slides.length;
+  }, 4000);
+</script>
