@@ -102,7 +102,7 @@ textarea {
 /* Optional: Add subtle hover effect */
 #dashboard tr:hover {
   background-color: rgba(0,0,0,0.05);
-  
+
   /* Responsive Button Layout Enhancement */
 .button-container {
   display: flex;
@@ -124,5 +124,27 @@ button {
 
 button:hover {
   background-color: #1565c0;
+}
+/* Form field enhancement for better readability and accessibility */
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 5px rgba(25, 118, 210, 0.4);
+  outline: none;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
 }
 }
