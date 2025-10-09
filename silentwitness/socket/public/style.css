@@ -102,4 +102,27 @@ textarea {
 /* Optional: Add subtle hover effect */
 #dashboard tr:hover {
   background-color: rgba(0,0,0,0.05);
+  
+  /* Responsive Button Layout Enhancement */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1565c0;
+}
 }
