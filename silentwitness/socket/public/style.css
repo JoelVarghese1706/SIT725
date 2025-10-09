@@ -17,6 +17,37 @@ body {
   left: 0;
   right: 0;
   z-index: 1000;
+  /* Updated Navbar Styles */
+/* Old topbar backup - can remove later */
+/*
+.topbar {
+  background: rgba(0, 0, 0, 0.85);
+  ...
+}
+*/
+/* Navbar UI Enhancement */
+  background: linear-gradient(90deg, #0d47a1, #1976d2);
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: background 0.3s ease;
+}
+
+.topbar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.topbar a:hover {
+  color: #ffcc00;
 }
 .topbar h1 {
   margin: 0;
