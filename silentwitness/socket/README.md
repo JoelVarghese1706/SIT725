@@ -8,6 +8,8 @@ Silent Witness is a safe and anonymous platform for employees to report workplac
 
 The system allows optional name entry, incident descriptions, and a management dashboard to view reports in real time.
 
+## Project Overview
+SilentWitness is a secure and anonymous reporting platform built using Node.js, Express, and MongoDB. It aims to protect user privacy while ensuring data integrity and transparency.
 
 
 🚀 Features
